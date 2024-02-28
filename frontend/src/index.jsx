@@ -1,24 +1,11 @@
 import { h, render } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
 import EmployeeForm from './Components/AddEmployeeForm';
-import EmployeeList from './Components/EmployeeList';
+import DepartmentEmployees from './Components/DepartmentEmployees';
 
 export function App() {
   const [employees, setEmployees] = useState([]);
 
-  useEffect(() => {
-    fetchEmployees();
-  }, []);
-
-  const fetchEmployees = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/employees');
-      const data = await response.json();
-      setEmployees(data);
-    } catch (error) {
-      console.error('Error fetching employees:', error);
-    }
-  };
 
   const addEmployee = async (employeeData) => {
     try {
@@ -41,7 +28,7 @@ export function App() {
     <div>
       <h1>Payroll Management System</h1>
       <EmployeeForm addEmployee={addEmployee} />
-      <EmployeeList employees={employees} />
+      <DepartmentEmployees />
     </div>
   );
 }
