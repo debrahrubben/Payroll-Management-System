@@ -1,43 +1,49 @@
-import { render } from 'preact';
-
-import preactLogo from './assets/preact.svg';
-import './style.css';
+import { h, render } from 'preact';
+import { useState, useEffect } from 'preact/hooks';
+import EmployeeForm from './Components/AddEmployeeForm';
+import EmployeeList from './Components/EmployeeList';
 
 export function App() {
-	return (
-		<div>
-			<a href="https://preactjs.com" target="_blank">
-				<img src={preactLogo} alt="Preact logo" height="160" width="160" />
-			</a>
-			<h1>Get Started building Vite-powered Preact Apps </h1>
-			<section>
-				<Resource
-					title="Learn Preact"
-					description="If you're new to Preact, try the interactive tutorial to learn important concepts"
-					href="https://preactjs.com/tutorial"
-				/>
-				<Resource
-					title="Differences to React"
-					description="If you're coming from React, you may want to check out our docs to see where Preact differs"
-					href="https://preactjs.com/guide/v10/differences-to-react"
-				/>
-				<Resource
-					title="Learn Vite"
-					description="To learn more about Vite and how you can customize it to fit your needs, take a look at their excellent documentation"
-					href="https://vitejs.dev"
-				/>
-			</section>
-		</div>
-	);
-}
+  const [employees, setEmployees] = useState([]);
 
-function Resource(props) {
-	return (
-		<a href={props.href} target="_blank" class="resource">
-			<h2>{props.title}</h2>
-			<p>{props.description}</p>
-		</a>
-	);
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  const fetchEmployees = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/employees');
+      const data = await response.json();
+      setEmployees(data);
+    } catch (error) {
+      console.error('Error fetching employees:', error);
+    }
+  };
+
+  const addEmployee = async (employeeData) => {
+    try {
+      const response = await fetch('http://localhost:3000/employees', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(employeeData),
+      });
+      const newEmployee = await response.json();
+      setEmployees([...employees, newEmployee]); // Update state with the new employee
+      console.log('Employee added successfully:', newEmployee);
+    } catch (error) {
+      console.error('Error adding employee:', error);
+    }
+  };
+
+  return (
+    <div>
+      <h1>Payroll Management System</h1>
+      <EmployeeForm addEmployee={addEmployee} />
+      <EmployeeList employees={employees} />
+    </div>
+  );
 }
 
 render(<App />, document.getElementById('app'));

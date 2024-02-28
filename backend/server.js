@@ -1,22 +1,20 @@
-// server.js
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const { Pool } = require('pg');
+const cors = require('cors');
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors()); // Enable CORS for all routes
 
-// Create a connection pool to the PostgreSQL database
 const pool = new Pool({
-  user: 'your_username',
-  host: 'your_host',
-  database: 'your_database',
-  password: 'your_password',
+  user: 'postgres',
+  host: 'localhost',
+  database: 'payroll_management_system',
+  password: '1234',
   port: 5432,
 });
 
-// Endpoint to add a new employee to the database
 app.post('/employees', async (req, res) => {
   const { name, salary, department } = req.body;
   try {
@@ -27,7 +25,6 @@ app.post('/employees', async (req, res) => {
   }
 });
 
-// Endpoint to get all employees from the database
 app.get('/employees', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM employees');

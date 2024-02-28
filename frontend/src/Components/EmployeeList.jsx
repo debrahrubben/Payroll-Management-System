@@ -1,5 +1,4 @@
-// src/components/EmployeeList.js
-
+// EmployeeList.js
 import { h } from 'preact';
 
 const EmployeeList = ({ employees }) => {
