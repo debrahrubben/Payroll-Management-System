@@ -77,6 +77,30 @@ app.delete('/employees/:id', async (req, res) => {
   }
 });
 
+// Update route for employees
+app.put('/employees/:identificationCode', async (req, res) => {
+  const identificationCode = req.params.identificationCode;
+  const { name, salary, department, email, bankAccount } = req.body;
+  
+  try {
+    // Perform update operation in the database based on identificationCode
+    const result = await pool.query(
+      'UPDATE employees SET name = $1, salary = $2, department = $3, email = $4, bank_account = $5 WHERE identification_code = $6 RETURNING *',
+      [name, salary, department, email, bankAccount, identificationCode]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Employee not found' });
+    }
+
+    res.status(200).json(result.rows[0]); // Return the updated employee data
+  } catch (error) {
+    console.error('Error updating employee:', error);
+    res.status(500).json({ error: 'An error occurred while updating the employee' });
+  }
+});
+
+
 
 const PORT = 3000;
 app.listen(PORT, () => {

@@ -6,7 +6,6 @@ import EmployeeForm from './Components/AddEmployeeForm';
 import DepartmentEmployees from './Components/DepartmentEmployees';
 
 
-
 export function App() {
   const [employees, setEmployees] = useState([]);
 
