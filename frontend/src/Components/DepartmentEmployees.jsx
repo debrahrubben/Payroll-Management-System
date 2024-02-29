@@ -2,6 +2,8 @@ import { h } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
 import axios from 'axios';
 import { Tabs, Card } from 'antd';
+import { Button } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
 
 const { TabPane } = Tabs;
 
@@ -73,7 +75,7 @@ const handleDeleteEmployee = async (employeeId, department) => {
                         <p>Salary: GHC {employee.salary}</p>
                         <p>Email: {employee.email}</p>
                         <p>Bank Account: {employee.bank_account}</p>
-                        <button onClick={() => handleDeleteEmployee(employee.id, department)} style={{color:'tomato', borderRadius:'3px'}}>Delete</button>
+                        <Button onClick={() => handleDeleteEmployee(employee.id, department)} type="primary" style={{ backgroundColor: 'tomato' }}>Delete<DeleteOutlined /></Button>
                       </Card>
                     ))}
                   </div>
