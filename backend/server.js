@@ -16,14 +16,19 @@ const pool = new Pool({
 });
 
 app.post('/employees', async (req, res) => {
-  const { name, salary, department } = req.body;
+  const { name, identificationCode, salary, department, email, bankAccount } = req.body;
   try {
-    const result = await pool.query('INSERT INTO employees (name, salary, department) VALUES ($1, $2, $3) RETURNING *', [name, salary, department]);
+    const result = await pool.query(
+      'INSERT INTO employees (name, identification_code, salary, department, email, bank_account) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [name, identificationCode, salary, department, email, bankAccount]
+    );
     res.status(201).json(result.rows[0]);
   } catch (error) {
     res.status(500).json({ error: 'An error occurred while adding the employee' });
   }
 });
+
+
 
 app.get('/employees', async (req, res) => {
   try {
@@ -57,6 +62,20 @@ app.get('/employees/:department', async (req, res) => {
   }
 });
 
+app.delete('/employees/:id', async (req, res) => {
+  const employeeId = req.params.id;
+  try {
+    const result = await pool.query('DELETE FROM employees WHERE id = $1', [employeeId]);
+    if (result.rowCount === 0) {
+      // If no rows were affected, it means the employee with the given ID doesn't exist
+      return res.status(404).json({ error: 'Employee not found' });
+    }
+    res.status(200).json({ message: 'Employee deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting employee:', error);
+    res.status(500).json({ error: 'An error occurred while deleting the employee' });
+  }
+});
 
 
 const PORT = 3000;

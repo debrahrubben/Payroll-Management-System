@@ -1,7 +1,11 @@
+
+
 import { h, render } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
 import EmployeeForm from './Components/AddEmployeeForm';
 import DepartmentEmployees from './Components/DepartmentEmployees';
+
+
 
 export function App() {
   const [employees, setEmployees] = useState([]);
@@ -26,7 +30,7 @@ export function App() {
 
   return (
     <div>
-      <h1>Payroll Management System</h1>
+      <h1 style={{textAlign:'center'}}>Payroll Management System</h1>
       <EmployeeForm addEmployee={addEmployee} />
       <DepartmentEmployees />
     </div>
