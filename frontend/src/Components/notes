@@ -3,3 +3,14 @@ VALUES
     ('John Doe', 'ID001', 50000, 'HR', 'john.doe@example.com', '1234567890'),
     ('Jane Smith', 'ID002', 60000, 'Finance', 'jane.smith@example.com', '0987654321'),
     ('Michael Johnson', 'ID003', 55000, 'IT', 'michael.johnson@example.com', '1357924680');
+
+
+CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR,
+    identification_code VARCHAR UNIQUE,
+    salary NUMERIC,
+    department VARCHAR,
+    email VARCHAR,
+    bank_account VARCHAR
+);
