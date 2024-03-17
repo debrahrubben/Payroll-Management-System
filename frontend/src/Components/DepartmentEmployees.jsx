@@ -1,5 +1,4 @@
-import { h } from 'preact';
-import { useState, useEffect } from 'preact/hooks';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Tabs, Card, Input } from 'antd';
 import { Button } from 'antd';
@@ -13,10 +12,25 @@ const DepartmentEmployees = () => {
   const [departments, setDepartments] = useState([]);
   const [departmentEmployees, setDepartmentEmployees] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
+  const [totalEmployees, setTotalEmployees] = useState(0);
+  const [departmentCounts, setDepartmentCounts] = useState({});
+  const [totalSalary, setTotalSalary] = useState(0); // New state variable
 
   useEffect(() => {
     fetchDepartments();
+    fetchTotalEmployees();
+    fetchDepartmentCounts();
+    fetchTotalSalary(); 
   }, []);
+
+  const fetchTotalSalary = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/employees/total-salary');
+      setTotalSalary(response.data.totalSalary);
+    } catch (error) {
+      console.error('Error fetching total salary sum:', error);
+    }
+  };
 
   const fetchDepartments = async () => {
     try {
@@ -33,15 +47,36 @@ const DepartmentEmployees = () => {
   const fetchEmployeesByDepartment = async (department) => {
     try {
       const response = await axios.get(`http://localhost:3000/employees/${department}`);
-      setDepartmentEmployees({ ...departmentEmployees, [department]: response.data });
+      setDepartmentEmployees(prevState => ({
+        ...prevState,
+        [department]: response.data
+      }));
     } catch (error) {
       console.error(`Error fetching employees for department ${department}:`, error);
     }
   };
-
+  
   const handleTabSelect = (department) => {
     if (!departmentEmployees[department]) {
       fetchEmployeesByDepartment(department);
+    }
+  };
+
+  const fetchTotalEmployees = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/employees/total');
+      setTotalEmployees(response.data.totalEmployees);
+    } catch (error) {
+      console.error('Error fetching total employees:', error);
+    }
+  };
+
+  const fetchDepartmentCounts = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/employees/department-count');
+      setDepartmentCounts(response.data);
+    } catch (error) {
+      console.error('Error fetching department counts:', error);
     }
   };
 
@@ -60,18 +95,23 @@ const DepartmentEmployees = () => {
 
   return (
     <div style={{ color: 'white' }}>
-      <div>
-        <h4 style={{ textAlign: 'center' }}>Select Department</h4>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
-  <Search
-    placeholder="Search employees"
-    allowClear
-    onSearch={handleSearch}
-    style={{ width: 200 }}
-  />
-</div>
-
-
+    <p>Total Employees: {totalEmployees}</p>
+    <p>Total Salary: GH₵ {totalSalary}</p>
+    <div>
+      <h4 style={{ textAlign: 'center' }}>Select Department</h4>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+        <Search
+          placeholder="Search employees"
+          allowClear
+          onSearch={handleSearch}
+          style={{ width: 200 }}
+        />
+        <div>
+          {Object.entries(departmentCounts).map(([department, count]) => (
+            <p key={department}>Employees in {department}: {count}</p>
+          ))}
+        </div>
+      </div>
         <Tabs defaultActiveKey={departments[0]} onChange={handleTabSelect}>
           {departments.map(department => (
             <TabPane tab={<span style={{ color: 'white' }}>{department}</span>} key={department}>
