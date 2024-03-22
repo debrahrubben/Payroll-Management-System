@@ -67,7 +67,6 @@ class AddEmployeeForm extends Component {
     try {
       const response = await axios.post('http://localhost:3000/employees', this.state.formData);
       console.log('Employee added successfully:', response.data);
-      // Reset form fields after successful submission
       this.setState({
         formData: {
           name: '',
@@ -78,12 +77,12 @@ class AddEmployeeForm extends Component {
           bankAccount: ''
         }
       });
-      // Trigger a refresh of department employees after adding a new employee
-      this.props.fetchDepartments();
+      this.props.fetchEmployees(); // Call the fetchEmployees function passed down as props
     } catch (error) {
       console.error('Error adding employee:', error);
     }
-  };
+  }; 
+
   
   handleUpdate = async (e) => {
     e.preventDefault();

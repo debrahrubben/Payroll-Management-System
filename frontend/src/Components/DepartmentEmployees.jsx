@@ -119,21 +119,24 @@ const DepartmentEmployees = () => {
                 <div>
                   <h3 style={{ color: 'white' }}>Employees in {department}</h3>
                   <div style={{ display: 'flex', flexWrap: 'wrap', paddingLeft: '30px' }}>
-                    {departmentEmployees[department]
-                      .filter(employee => employee.name.toLowerCase().includes(searchQuery.toLowerCase()))
-                      .map((employee, index) => (
-                        <Card
-                          key={index}
-                          title={employee.name}
-                          style={{ width: 270, margin: '10px 10px 0px 0px', backgroundColor: '#D8E3E7' }}
-                        >
-                          <p>Identification Code: {employee.identification_code}</p>
-                          <p style={{ fontSize: 'large' }}><b>Salary: GH₵ {employee.salary}</b></p>
-                          <p>Email: {employee.email}</p>
-                          <p>Bank Account: {employee.bank_account}</p>
-                          <Button onClick={() => handleDeleteEmployee(employee.id, department)} type="primary" style={{ backgroundColor: 'tomato' }}>Delete<DeleteOutlined /></Button>
-                        </Card>
-                      ))}
+                  {departmentEmployees[department]
+    .filter(employee => employee.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    .slice() // Make a shallow copy of the array to avoid mutating the original array
+    .reverse() // Reverse the sorted array to get descending order
+    .map((employee, index) => (
+        <Card
+            key={index}
+            title={employee.name}
+            style={{ width: 270, margin: '10px 10px 0px 0px', backgroundColor: '#D8E3E7' }}
+        >
+            <p>Identification Code: {employee.identification_code}</p>
+            <p style={{ fontSize: 'large' }}><b>Salary: GH₵ {employee.salary}</b></p>
+            <p>Email: {employee.email}</p>
+            <p>Bank Account: {employee.bank_account}</p>
+            <Button onClick={() => handleDeleteEmployee(employee.id, department)} type="primary" style={{ backgroundColor: 'tomato' }}>Delete<DeleteOutlined /></Button>
+        </Card>
+    ))}
+
                   </div>
                 </div>
               )}
@@ -146,3 +149,4 @@ const DepartmentEmployees = () => {
 };
 
 export default DepartmentEmployees;
+

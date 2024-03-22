@@ -15,6 +15,13 @@
     port: 5432,
   });
 
+
+// Add a callback function to log successful database connection
+pool.on('connect', () => {
+  console.log('Connected to PostgreSQL database successfully');
+});
+
+
   app.post('/employees', async (req, res) => {
     const { name, identificationCode, salary, department, email, bankAccount } = req.body;
     try {
@@ -103,14 +110,18 @@
 
   // Add route to fetch total salary sum of all employees
   app.get('/employees/total-salary', async (req, res) => {
-    try {
-      const result = await pool.query('SELECT SUM(salary) AS totalSalary FROM employees');
-      const totalSalary = result.rows[0].totalSalary;
-      res.status(200).json({ totalSalary });
-    } catch (error) {
-      res.status(500).json({ error: 'An error occurred while fetching total salary sum' });
-    }
-  });
+  try {
+    const result = await pool.query('SELECT COALESCE(SUM(salary), 0) AS totalSalary FROM employees LIMIT 1');
+    const totalSalary = parseFloat(result.rows[0].totalSalary);
+    res.status(200).json({ totalSalary });
+  } catch (error) {
+    console.error('Error fetching total salary sum:', error);
+    res.status(500).json({ error: 'An error occurred while fetching total salary sum' });
+  }
+});
+
+  
+  
 
 
   // Add route to fetch number of employees in each department
